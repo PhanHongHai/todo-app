@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Form, Input, Button } from 'antd';
 
-function ModalUpdate({ visible, setVisible, values, onUpdate }) {
+function ModalUpdate({ visible, setVisible, values, onUpdate, }) {
+    const [form] = Form.useForm();
     return (
         <Modal
             title="Cập nhật nội dung công việc"
@@ -10,9 +11,11 @@ function ModalUpdate({ visible, setVisible, values, onUpdate }) {
             footer={null}
             onCancel={() => {
                 setVisible(false);
+                form.resetFields();
+
             }}
         >
-            <Form onFinish={onUpdate}>
+            <Form form={form} onFinish={onUpdate}>
                 <Form.Item
                     label="Nội dung"
                     name="title"
@@ -45,4 +48,4 @@ ModalUpdate.propTypes = {
     values: PropTypes.object.isRequired,
 };
 
-export default ModalUpdate;
+export default (ModalUpdate);

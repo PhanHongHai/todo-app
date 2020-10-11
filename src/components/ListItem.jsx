@@ -11,7 +11,7 @@ import EmptyComponent from './Empty';
 dayjs.extend(relativeTime);
 dayjs.locale('vi');
 
-function ListItem({ list, onOpenUpdate, onRemoved }) {
+function ListItem({ list, onOpenUpdate, onUpdateOther, onRemoved }) {
 	return (
 		<ConfigProvider renderEmpty={EmptyComponent}>
 			<List
@@ -33,16 +33,31 @@ function ListItem({ list, onOpenUpdate, onRemoved }) {
 							title={<p>{item.title}</p>}
 							description={
 								<Tooltip title={dayjs(item.time).fromNow()}>
-									{dayjs(item.time).format('DD/MM/YYYY')}
+									Ngày đăng {dayjs(item.time).format('DD/MM/YYYY')}
 								</Tooltip>
 							}
 						/>
 						<div style={{ display: 'flex', alignItems: 'center' }}>
-							<p style={{ margin: 'auto' }}>
-								Thời hạn : {item.deadline && dayjs(item.deadline).format('DD-MM-YYYY')}
-							</p>
-							<Checkbox />
-							<Rate count={1} />
+							{item.deadline ? (
+								<p style={{ margin: 'auto' }}>
+									Thời hạn : {item.deadline && dayjs(item.deadline).format('DD-MM-YYYY')}
+								</p>
+							) : (
+									''
+								)}
+							<span style={{ margin: '0 10px' }}>
+								Tiến độ :{' '}
+								<Checkbox
+									defaultChecked={item.check}
+									onChange={(e) => onUpdateOther(item.id, { check: e.target.checked })}
+								/>
+							</span>
+							<Rate
+								style={{ margin: '0 10px' }}
+								count={1}
+								defaultValue={item.star}
+								onChange={(value) => onUpdateOther(item.id, { star: value })}
+							/>
 						</div>
 					</List.Item>
 				)}
@@ -58,6 +73,7 @@ ListItem.defaultProps = {
 ListItem.propTypes = {
 	list: PropTypes.array.isRequired,
 	onOpenUpdate: PropTypes.func.isRequired,
+	onUpdateOther: PropTypes.func.isRequired,
 	onRemoved: PropTypes.func.isRequired,
 };
 
